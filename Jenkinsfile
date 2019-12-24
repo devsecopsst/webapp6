@@ -12,7 +12,7 @@ pipeline {
             ''' 
       }
     }
-
+  } 
     
     stage ('Check-Git-Secrets') {
       steps {
@@ -22,26 +22,6 @@ pipeline {
       }
     }
 
-    
-    stage ('Source composition Analysis'){
-      steps{
-        sh 'rm owasp* || true'
-        sh 'wget https://raw.githubusercontent.com/devsecopsst/webapp4/master/owasp-dependency-check.sh'
-        sh 'chmod +x owasp-dependency-check.sh'
-        sh 'bash owasp-dependency-check.sh'
-        sh 'cat /var/lib/jenkins/OWASP-Dependency-Check/reports/dependency-check-report.xml'
-      }
-    }
-    
-    stage ('SAST'){
-      steps {
-        withSonarQubeEnv('sonar'){
-          sh 'mvn sonar:sonar'
-          sh 'cat target/sonar/report-task.txt'
-        }
-      }
-    }
-    
     stage ('Builds') {
       steps {
       sh 'mvn clean package'
@@ -53,8 +33,6 @@ pipeline {
         sh 'scp -o StrictHostKeyChecking=no target/*.war ubuntu@18.191.222.132:/prod/apache-tomcat-8.5.50/webapps/webapp.war'
         }
       }
-
-      } 
+     } 
+   
     }
-  }
-}
